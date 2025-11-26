@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Flowchart Editor - Due Diligence Flow Designer</title>
+<link rel="stylesheet" href="style.css" />
+<!-- GoJS CDN -->
+<script src="https://unpkg.com/gojs/release/go.js"></script>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<header class="top-bar">
+<div class="top-bar-left">
+<button class="secondary-btn" onclick="window.location.href='index.html'">&larr; Dashboard</button>
+<h1 id="flowTitle">Flowchart</h1>
+</div>
+<div class="top-bar-right">
+<button id="renameBtn" class="secondary-btn">Rename</button>
+<button id="exportPngBtn" class="secondary-btn">Export PNG</button>
+<button id="exportPdfBtn" class="secondary-btn">Export PDF</button>
+<button id="saveBtn" class="primary-btn">Save</button>
+</div>
+</header>
+
+<main class="editor-layout">
+<aside class="palette-panel">
+<h3>Shapes</h3>
+<div id="myPaletteDiv" class="palette"></div>
+<p class="helper-text small">
+Tip: Start with <strong>Start</strong>, add <strong>Decision</strong> nodes for
+Serious vs Non-serious, HCP vs Consumer, Pregnancy, etc., and connect to
+letter outcomes.
+</p>
+</aside>
+
+<section class="diagram-panel">
+<div id="myDiagramDiv" class="diagram"></div>
+</section>
+</main>
+
+<footer class="app-footer">
+Due Diligence Flow Designer — <span class="signature">Designed by Shirley Amreen</span>
+</footer>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+const params = new URLSearchParams(window.location.search);
+const flowId = params.get("id");
+if (!flowId) {
+alert("No flowchart selected. Redirecting to dashboard.");
+window.location.href = "index.html";
+return;
+}
+initEditor(flowId);
+});
+</script>
+</body>
+</html>
