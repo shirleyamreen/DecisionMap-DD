@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>Sherlz Tool Enhanced</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <script src="https://unpkg.com/gojs/release/go.js"></script>
+ <style>
+ html, body { height: 100%; margin: 0; background: #f7fafc; }
+ body { display: flex; flex-direction: column; min-height: 100vh; font-family: sans-serif; }
+ #navbar {
+ background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+ color: #fff; padding: 14px 24px; font-size: 1.2em; font-weight: bold;
+ display: flex; align-items: center; justify-content: space-between;
+ }
+ #main { flex: 1; display: flex; flex-direction: column; }
+ #mindmap-area { flex: 1; min-height: 0; }
+ #footer {
+ background: #222; color: #bbb; text-align: center; padding: 10px 0; font-size: 0.95em;
+ }
+ .menu-btn { background: #3b82f6; border: none; padding: 8px 14px; color: #fff; margin: 0 4px; border-radius: 4px; cursor: pointer; }
+ .menu-btn:active { background: #2563eb; }
+ #instructions {
+ background: #e0e7ff; color: #222; padding: 10px 18px; border-radius: 8px; margin: 16px auto 0 auto; max-width: 700px;
+ font-size: 1em; box-shadow: 0 2px 8px #0001;
+ }
+ #myDiagramDiv { width: 100%; height: 60vh; background: #f3f3f3; border-radius: 12px; box-shadow: 0 2px 12px #0002; }
+ #floatingToolbar {
+ display: none;
+ position: absolute;
+ background: #fff;
+ border: 1px solid #ccc;
+ border-radius: 6px;
+ padding: 8px;
+ box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+ z-index: 1000;
+ }
+ #floatingToolbar button {
+ margin: 2px;
+ font-size: 1em;
+ cursor: pointer;
+ }
+ </style>
+</head>
+<body>
+ <div id="navbar">
+ <span>Sherlz Tool Enhanced</span>
+ <div>
+ <button class="menu-btn" onclick="addRoot()">+ New Map</button>
+ <button class="menu-btn" onclick="exportInteractiveMap()">Export View</button>
+ </div>
+ </div>
+
+ <div id="main">
+ <div id="instructions">
+ <b>How to use:</b> Right-click a node to add or edit. Select a node to use the floating toolbar. All data is stored locally.
+ </div>
+ <div id="mindmap-area">
+ <div id="myDiagramDiv"></div>
+ </div>
+ </div>
+
+ <div id="footer">
+ Sherlz Tool &copy; 2025 — All data stays on your device.
+ </div>
+
+ <!-- Floating Toolbar -->
+ <div id="floatingToolbar">
+ <button onclick="applyStyle('bold')">B</button>
+ <button onclick="applyStyle('italic')">I</button>
+ <button onclick="changeTextColorUI()"> </button>
+ <button onclick="changeNodeColorUI()"> </button>
+ </div>
+
+ <script>
+ const $ = go.GraphObject.make;
+ let myDiagram;
+ let selectedNode = null;
+
+ function initDiagram() {
+ myDiagram = $(go.Diagram, "myDiagramDiv", {
+ "undoManager.isEnabled": true,
+ layout: $(go.TreeLayout, { angle: 0, arrangement: go.TreeLayout.ArrangementHorizontal }),
+ "animationManager.isEnabled": true
+ });
+
+ myDiagram.nodeTemplate =
+ $(go.Node, "Auto",
+ $(go.Shape,
+ new go.Binding("figure", "type").makeTwoWay(),
+ {
+ fill: "#4f8cff", stroke: "#2563eb", strokeWidth: 2,
+ minSize: new go.Size(60, 40)
+ },
+ new go.Binding("fill", "color"),
+ new go.Binding("stroke", "borderColor")
+ ),
+ $(go.Panel, "Horizontal",
+ { margin: 5 },
+ $(go.Picture,
+ { desiredSize: new go.Size(24,24), margin: new go.Margin(0,4,0,-6) },
+ new go.Binding("source", "icon")
+ ),
+ $(go.TextBlock,
+ {
+ margin: 4,
+ editable: true,
+ font: "bold 1.09em sans-serif",
+ stroke: "#fff",
+ wrap: go.TextBlock.WrapFit,
+ overflow: go.TextBlock.OverflowEllipsis,
+ maxSize: new go.Size(160, 80),
+ textAlign: "center"
+ },
+ new go.Binding("text").makeTwoWay(),
+ new go.Binding("stroke", "textColor"),
+ new go.Binding("font", "font")
+ )
+ )
+ );
+
+ myDiagram.linkTemplate =
+ $(go.Link, { routing: go.Link.Orthogonal, corner: 12 },
+ $(go.Shape, { strokeWidth: 2, stroke: "#bbb" })
+ );
+
+ myDiagram.model = new go.GraphLinksModel(
+ [{ key: 0, text: "Central Topic", color: "#4f8cff", borderColor: "#2563eb", icon: "" }],
+ []
+ );
+
+ myDiagram.addDiagramListener("ChangedSelection", function(e) {
+ const node = e.diagram.selection.first();
+ if (node instanceof go.Node) {
+ selectedNode = node;
+ showToolbar(node);
+ } else {
+ selectedNode = null;
+ hideToolbar();
+ }
+ });
+ }
+
+ function showToolbar(node) {
+ const div = document.getElementById("myDiagramDiv");
+ const toolbar = document.getElementById("floatingToolbar");
+ const point = node.actualBounds.position;
+ const canvasPos = myDiagram.transformDocToView(point);
+ toolbar.style.left = `${canvasPos.x + div.offsetLeft + 40}px`;
+ toolbar.style.top = `${canvasPos.y + div.offsetTop - 10}px`;
+ toolbar.style.display = "block";
+ }
+
+ function hideToolbar() {
+ document.getElementById("floatingToolbar").style.display = "none";
+ }
+
+ function applyStyle(style) {
+ if (!selectedNode) return;
+ let font = selectedNode.data.font || "bold 1.09em sans-serif";
+ if (style === "bold") {
+ font = font.includes("bold") ? font.replace("bold ", "") : "bold " + font;
+ } else if (style === "italic") {
+ font = font.includes("italic") ? font.replace("italic ", "") : "italic " + font;
+ }
+ myDiagram.model.setDataProperty(selectedNode.data, "font", font);
+ }
+
+ function changeTextColorUI() {
+ if (!selectedNode) return;
+ const color = prompt("Text color (CSS color):", selectedNode.data.textColor || "#fff");
+ if (color) myDiagram.model.setDataProperty(selectedNode.data, "textColor", color);
+ }
+
+ function changeNodeColorUI() {
+ if (!selectedNode) return;
+ const color = prompt("Node color (CSS color):", selectedNode.data.color || "#4f8cff");
+ if (color) myDiagram.model.setDataProperty(selectedNode.data, "color", color);
+ }
+
+ function addRoot() {
+ myDiagram.model = new go.GraphLinksModel(
+ [{ key: 0, text: "Central Topic", color: "#4f8cff", borderColor: "#2563eb", icon: "" }],
+ []
+ );
+ }
+
+ function exportInteractiveMap() {
+ const modelData = myDiagram.model.toJson();
+ const viewerHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8">
+ <title>Mind Map Viewer</title>
+ <script src="https://unpkg.com/gojs/release/go.js"></script>
+ <style>html,body{margin:0;height:100%}#diagram{height:100vh}</style>
+</head>
+<body>
+<div id="diagram"></div>
+<script>
+const $ = go.GraphObject.make;
+const diagram = $(go.Diagram, "diagram", {
+ layout: $(go.TreeLayout, { angle: 0, arrangement: go.TreeLayout.ArrangementHorizontal })
+});
+diagram.nodeTemplate = $(go.Node, "Auto",
+ $(go.Shape, { fill: "#4f8cff", stroke: "#2563eb", strokeWidth: 2 },
+ new go.Binding("fill", "color"),
+ new go.Binding("stroke", "borderColor")),
+ $(go.Panel, "Horizontal",
+ { margin: 4 },
+ $(go.Picture, { desiredSize: new go.Size(24,24), margin: new go.Margin(0,4,0,-6) },
+ new go.Binding("source", "icon")),
+ $(go.TextBlock,
+ {
+ margin: 4,
+ editable: false,
+ font: "bold 1.09em sans-serif",
+ wrap: go.TextBlock.WrapFit,
+ maxSize: new go.Size(160, 80),
+ stroke: "#fff"
+ },
+ new go.Binding("text"),
+ new go.Binding("font"),
+ new go.Binding("stroke", "textColor"))
+ )
+);
+diagram.linkTemplate = $(go.Link, { routing: go.Link.Orthogonal, corner: 10 },
+ $(go.Shape, { strokeWidth: 2, stroke: "#bbb" }));
+diagram.model = go.Model.fromJson(${JSON.stringify(modelData)});
+</script>
+</body>
+</html>
+`;
+ const blob = new Blob([viewerHTML], { type: "text/html" });
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = "shared-mindmap.html";
+ a.click();
+ setTimeout(() => URL.revokeObjectURL(a.href), 500);
+ }
+
+ window.addEventListener('DOMContentLoaded', initDiagram);
+ </script>
+</body>
+</html>
