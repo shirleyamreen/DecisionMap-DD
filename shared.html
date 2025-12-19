@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Shared Flowchart - Due Diligence Flow Designer</title>
+<link rel="stylesheet" href="style.css" />
+<!-- GoJS CDN -->
+<script src="https://unpkg.com/gojs/release/go.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<header class="top-bar">
+<div class="top-bar-left">
+<h1 id="sharedTitle">Shared Flowchart</h1>
+</div>
+<div class="top-bar-right">
+<span class="badge badge-info">Shared View — Restricted Access</span>
+<button id="exportPngSharedBtn" class="secondary-btn">Export PNG</button>
+<button id="exportPdfSharedBtn" class="secondary-btn">Export PDF</button>
+</div>
+</header>
+
+<main class="shared-layout">
+<section class="diagram-panel">
+<div id="sharedDiagramDiv" class="diagram"></div>
+<p class="watermark-text">Shared View — Not Editable</p>
+</section>
+</main>
+
+<footer class="app-footer">
+Due Diligence Flow Designer — <span class="signature">Designed by Shirley Amreen</span>
+</footer>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+const params = new URLSearchParams(window.location.search);
+const flowId = params.get("id");
+if (!flowId) {
+alert("Invalid shared link. No flowchart id provided.");
+return;
+}
+initSharedView(flowId);
+});
+</script>
+</body>
+</html>
