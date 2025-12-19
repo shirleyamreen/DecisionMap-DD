@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Flowchart Editor - Due Diligence Flow Designer</title>
+<link rel="stylesheet" href="style.css" />
+<!-- GoJS CDN -->
+<script src="https://unpkg.com/gojs/release/go.js"></script>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<header class="top-bar">
+<div class="top-bar-left">
+<button class="secondary-btn" onclick="window.location.href='index.html'">&larr; Dashboard</button>
+<h1 id="flowTitle">Flowchart</h1>
+</div>
+<div class="top-bar-right">
+<button id="renameBtn" class="secondary-btn">Rename</button>
+<button id="exportPngBtn" class="secondary-btn">Export PNG</button>
+<button id="exportPdfBtn" class="secondary-btn">Export PDF</button>
+<button id="saveBtn" class="primary-btn">Save</button>
+</div>
+</header>
+
+<main class="editor-layout">
+<!-- Left: Palette -->
+<aside class="palette-panel">
+<h3>Shapes</h3>
+<div id="myPaletteDiv" class="palette"></div>
+<p class="helper-text small">
+Tip: Start with <strong>Start</strong>, add <strong>Decision</strong> nodes for
+Serious vs Non-serious, HCP vs Consumer, Pregnancy, etc., and connect to
+letter outcomes.
+</p>
+</aside>
+
+<!-- Center: Diagram -->
+<section class="diagram-panel">
+<div id="myDiagramDiv" class="diagram"></div>
+</section>
+
+<!-- Right: Properties panel (opens when node selected) -->
+<aside class="props-panel" id="propsPanel">
+<div class="props-header">
+<h3>Node Properties</h3>
+<button id="closePropsBtn" class="props-close-btn">&times;</button>
+</div>
+
+<div class="props-body">
+<div class="props-group">
+<label for="nodeText">Label</label>
+<input type="text" id="nodeText" />
+</div>
+
+<div class="props-group">
+<label for="nodeColor">Fill colour</label>
+<input type="color" id="nodeColor" />
+</div>
+
+<div class="props-group">
+<label for="nodeBorderColor">Border colour</label>
+<input type="color" id="nodeBorderColor" />
+</div>
+
+<div class="props-group">
+<label for="nodeBorderWidth">Border thickness</label>
+<input type="range" id="nodeBorderWidth" min="1" max="8" />
+<span class="range-value" id="nodeBorderWidthValue"></span>
+</div>
+
+<div class="props-group">
+<label>Size (W × H)</label>
+<div class="props-inline">
+<input type="range" id="nodeWidth" min="60" max="260" />
+<span class="range-value" id="nodeWidthValue"></span>
+</div>
+<div class="props-inline">
+<input type="range" id="nodeHeight" min="30" max="160" />
+<span class="range-value" id="nodeHeightValue"></span>
+</div>
+</div>
+
+<div class="props-group">
+<label for="nodeFigure">Shape</label>
+<select id="nodeFigure">
+<option value="RoundedRectangle">Rounded rectangle</option>
+<option value="Rectangle">Rectangle</option>
+<option value="Ellipse">Circle / Ellipse</option>
+<option value="Diamond">Diamond</option>
+<option value="PillShape">Pill</option>
+<option value="Hexagon">Hexagon</option>
+</select>
+</div>
+
+<div class="props-group">
+<label>Text style</label>
+<div class="props-inline">
+<label class="checkbox-inline">
+<input type="checkbox" id="nodeBold" /> Bold
+</label>
+<label class="checkbox-inline">
+<input type="checkbox" id="nodeItalic" /> Italic
+</label>
+</div>
+</div>
+
+<div class="props-group">
+<label for="nodeFontSize">Font size</label>
+<input type="range" id="nodeFontSize" min="10" max="22" />
+<span class="range-value" id="nodeFontSizeValue"></span>
+</div>
+
+<p class="helper-text smallest">
+Changes apply only to the selected node. Click on a different node to customise it.
+</p>
+</div>
+</aside>
+</main>
+
+<footer class="app-footer">
+Due Diligence Flow Designer — <span class="signature">Designed by Shirley Amreen</span>
+</footer>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+const params = new URLSearchParams(window.location.search);
+const flowId = params.get("id");
+if (!flowId) {
+alert("No flowchart selected. Redirecting to dashboard.");
+window.location.href = "index.html";
+return;
+}
+initEditor(flowId);
+});
+</script>
+</body>
+</html>
