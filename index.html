@@ -179,11 +179,18 @@
  }
 
  function addRoot() {
- myDiagram.model = new go.GraphLinksModel(
- [{ key: 0, text: "Central Topic", color: "#4f8cff", borderColor: "#2563eb", icon: "" }],
- []
- );
- }
+myDiagram.startTransaction("new map");
+
+myDiagram.model = new go.GraphLinksModel(
+[{ key: 0, text: "Central Topic", color: "#4f8cff", borderColor: "#2563eb", icon: "" }],
+[]
+);
+
+myDiagram.layoutDiagram(true); // 🔑 force layout refresh
+myDiagram.select(myDiagram.findNodeForKey(0));
+
+myDiagram.commitTransaction("new map");
+}
 
  function exportInteractiveMap() {
  const modelData = myDiagram.model.toJson();
@@ -243,4 +250,5 @@ diagram.model = go.Model.fromJson(${JSON.stringify(modelData)});
  window.addEventListener('DOMContentLoaded', initDiagram);
  </script>
 </body>
+
 </html>
