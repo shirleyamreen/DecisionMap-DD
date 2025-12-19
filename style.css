@@ -1,0 +1,110 @@
+body {
+margin: 0;
+font-family: system-ui, sans-serif;
+background: #f5f8ff;
+}
+
+.top-bar {
+display: flex;
+justify-content: space-between;
+padding: 10px 16px;
+background: #0f4fbf;
+color: white;
+}
+
+.top-bar button {
+margin-right: 6px;
+}
+
+.primary-btn {
+background: white;
+color: #0f4fbf;
+padding: 6px 12px;
+border-radius: 6px;
+border: none;
+font-weight: 600;
+}
+
+.secondary-btn {
+background: transparent;
+color: white;
+border: 1px solid white;
+padding: 6px 10px;
+border-radius: 6px;
+}
+
+.secondary-btn.danger {
+border-color: #ffcccc;
+color: #ffdddd;
+}
+
+.editor-layout {
+display: flex;
+height: calc(100vh - 90px);
+}
+
+.palette-panel {
+width: 220px;
+padding: 10px;
+background: white;
+}
+
+.diagram-panel {
+flex: 1;
+padding: 6px;
+}
+
+.diagram {
+width: 100%;
+height: 100%;
+border: 1px solid #d0dbff;
+background: white;
+}
+
+.props-panel {
+width: 260px;
+background: white;
+padding: 10px;
+border-left: 1px solid #d0dbff;
+display: none;
+}
+
+.props-panel.open {
+display: block;
+}
+
+.props-panel label {
+font-size: 12px;
+margin-top: 8px;
+display: block;
+}
+
+.props-panel input,
+.props-panel select {
+width: 100%;
+margin-bottom: 6px;
+}
+
+/* Animation helpers (used in Part 2 JS) */
+.node-active {
+box-shadow: 0 0 12px rgba(15, 79, 191, 0.8);
+}
+
+.node-faded {
+opacity: 0.3;
+}
+
+.link-active {
+stroke: #ff9900 !important;
+stroke-width: 4 !important;
+}
+
+.app-footer {
+padding: 6px 12px;
+background: #eef3ff;
+font-size: 13px;
+}
+
+.signature {
+font-family: cursive;
+}
