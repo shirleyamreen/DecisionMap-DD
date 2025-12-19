@@ -1,3 +1,5 @@
+/* Base */
+
 * {
 box-sizing: border-box;
 margin: 0;
@@ -132,6 +134,11 @@ line-height: 1.4;
 font-size: 0.8rem;
 }
 
+.helper-text.smallest {
+font-size: 0.75rem;
+margin-top: 8px;
+}
+
 /* Flow list */
 
 .flow-list {
@@ -220,6 +227,115 @@ border-radius: 6px;
 border: 1px solid #e1e8ff;
 }
 
+/* Properties panel (right side) */
+
+.props-panel {
+width: 260px;
+background: #ffffff;
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(11, 27, 59, 0.12);
+padding: 10px 12px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+transform: translateX(280px);
+opacity: 0;
+pointer-events: none;
+transition: transform 0.18s ease-out, opacity 0.18s ease-out;
+}
+
+.props-panel.open {
+transform: translateX(0);
+opacity: 1;
+pointer-events: auto;
+}
+
+.props-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 4px;
+}
+
+.props-header h3 {
+font-size: 0.95rem;
+}
+
+.props-close-btn {
+border: none;
+background: transparent;
+font-size: 1.1rem;
+line-height: 1;
+cursor: pointer;
+color: #5e6c8f;
+}
+
+.props-body {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-top: 4px;
+}
+
+.props-group {
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+
+.props-group label {
+font-size: 0.8rem;
+color: #4b5678;
+}
+
+.props-group input[type="text"] {
+padding: 5px 7px;
+border-radius: 5px;
+border: 1px solid #d3ddff;
+font-size: 0.85rem;
+}
+
+.props-group input[type="color"] {
+padding: 0;
+border-radius: 5px;
+border: 1px solid #d3ddff;
+height: 28px;
+}
+
+.props-group select {
+padding: 5px 7px;
+border-radius: 5px;
+border: 1px solid #d3ddff;
+font-size: 0.85rem;
+}
+
+.props-inline {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 6px;
+}
+
+.props-inline input[type="range"] {
+flex: 1;
+}
+
+.checkbox-inline {
+display: flex;
+align-items: center;
+gap: 4px;
+font-size: 0.8rem;
+}
+
+/* Range value text */
+
+.range-value {
+font-size: 0.78rem;
+color: #5e6c8f;
+min-width: 32px;
+text-align: right;
+}
+
 /* Shared layout */
 
 .shared-layout {
@@ -254,16 +370,19 @@ font-size: 1rem;
 
 /* Responsive */
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
 .editor-layout {
 flex-direction: column;
 }
 .palette-panel {
 width: 100%;
-flex-direction: column;
 }
-.palette {
-height: 120px;
+.props-panel {
+width: 100%;
+transform: translateY(20px);
+}
+.props-panel.open {
+transform: translateY(0);
 }
 .diagram {
 height: 60vh;
