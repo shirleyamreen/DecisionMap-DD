@@ -237,18 +237,9 @@ diagram.linkTemplate = $(go.Link, { routing: go.Link.Orthogonal, corner: 10 },
 diagram.model = go.Model.fromJson(${JSON.stringify(modelData)});
 </script>
 </body>
-</html>
-`;
- const blob = new Blob([viewerHTML], { type: "text/html" });
- const a = document.createElement('a');
- a.href = URL.createObjectURL(blob);
- a.download = "shared-mindmap.html";
- a.click();
- setTimeout(() => URL.revokeObjectURL(a.href), 500);
- }
+<script>
+window.addEventListener("DOMContentLoaded", initDiagram);
+</script>
 
- window.addEventListener('DOMContentLoaded', initDiagram);
- </script>
 </body>
-
 </html>
